@@ -10,7 +10,7 @@ from sys import exit
 class App():
 	def __init__(self):
 		self.root = Tk()
-		self.directorylist = ["2013-12-06-London-Andrews", "2014-04-26-Rissa", "2014-05-10-Josh", "2014-06-02-Sofia", "2014-06-08-Johannie", "2014-11-19-London-Andrews", "2015-01-25-Freshie-Juice","2015-02-18/Arti"]
+		self.directorylist = ["test"]
 
 		#Testing
 		#self.directorylist = ["testfolder"]
