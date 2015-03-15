@@ -3,6 +3,7 @@ from Tkinter import *
 from PIL import Image, ImageTk
 
 import directory_picker as dp
+import sorting_controls as sc
 
 import os
 import time
@@ -22,6 +23,7 @@ class App():
 			
 		self.root.geometry('+10+10')
 		
+		"""
 		self.skipbtn = Button(self.root, text="Skip", command=self.next)
 		self.editedbtn = Button(self.root, text="Already edited", command=self.editedpic)
 		self.toeditbtn = Button(self.root, text="I like this one!", command=self.editpic)
@@ -29,28 +31,25 @@ class App():
 		
 		self.commentlabel = Label(self.root, text="Add a comment")
 		self.comment = Entry(self.root)
-						
+			"""			
 		self.directory_widget = dp.DirectoryPicker(self, self.root)
 		self.directorylist = self.directory_widget.directorylist
+		
+		self.sorting_widget = sc.SortingControls(self, self.root)
 		
 		self.current_photo = ""
 		self.root.mainloop()
 	
 	def start_sorting(self):
 		self.init_list()
-		self.skipbtn.grid(column=1, row=0)
-		self.editedbtn.grid(column=1, row=1)
-		self.toeditbtn.grid(column=1, row=2)
-		self.vetobtn.grid(column=1, row=3)
-		self.commentlabel.grid(column=1, row=4)
-		self.comment.grid(column=1, row=5)
+		self.sorting_widget.grid()
 		self.directory_widget.grid_remove()
 		self.update_picture(initial=True)
 		self.picture.bind("<Button-1>", self.next)
 		
 	
 	def update_picture(self, initial=False):
-		self.comment.delete(0, END)
+		self.sorting_widget.delete_comment()
 		self.current_photo = self.photolist[self.index][0]
 		original = Image.open(self.photolist[self.index][0])
 		ratio = 750.0/float(original.size[1])
@@ -65,7 +64,7 @@ class App():
 			self.picture.configure(image=photo)
 			self.picture.image = photo
 		self.root.wm_title(self.photolist[self.index][1]+": "+str(self.index)+" viewed")
-	
+	"""
 	def vetopic(self, event=None):
 		with open(self.veto, "a") as v:
 			if self.comment.get()!=None:
@@ -92,7 +91,7 @@ class App():
 			e.write(self.current_photo+"\n\n")
 			
 		self.next()
-		 
+	"""
 	
 	def next(self, event=None):
 		self.index = self.index+1
