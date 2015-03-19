@@ -21,22 +21,22 @@ class App():
 		self.edited = self.home+"edited.txt"
 		self.skip = {}
 		
-		#Size and arrangement
 		self.root.geometry('+10+10')
-		self.appgrid ={}
-		self.set_appgrid()
 		
-		self.directory_widget = dp.DirectoryPicker(self, self.root)
+		self.control_frame = Frame(self.root)
+		self.control_frame.grid(column=1, row=0)
+		
+		self.directory_widget = dp.DirectoryPicker(self, self.control_frame)
 		self.directorylist = self.directory_widget.directorylist
 		
-		self.sorting_widget = sc.SortingControls(self, self.root)
+		self.sorting_widget = sc.SortingControls(self, self.control_frame)
 		
 		self.current_photo = ""
 		self.root.mainloop()
 	
 	def start_sorting(self):
 		self.init_list()
-		self.sorting_widget.grid(self.appgrid)
+		self.sorting_widget.pack()
 		self.directory_widget.update_grid()
 		self.update_picture(initial=True)
 		self.picture.bind("<Button-1>", self.next)
@@ -53,7 +53,7 @@ class App():
 		if initial:
 			self.picture = Label(image=photo)
 			self.picture.photo = photo
-			self.picture.grid(column=self.appgrid["picture_col"], row=self.appgrid["picture_row"], rowspan=self.appgrid["picture_rowspan"])
+			self.picture.grid(column=0, row=0)
 		else:
 			self.picture.configure(image=photo)
 			self.picture.image = photo
@@ -110,31 +110,6 @@ class App():
 			print "No pictures found!"
 			exit()
 			
-	def set_appgrid(self):
-		self.appgrid["picture_col"] = 0 
-		self.appgrid["picture_row"] = 0 
-		self.appgrid["picture_rowspan"] = 5
-		
-		self.appgrid["pd_btn_col"] = 0 
-		self.appgrid["pd_btn_row"] = 0 
-		self.appgrid["pd_display_setup_col"] = 0 
-		self.appgrid["pd_display_setup_row"] = 1 
-		self.appgrid["start_btn_col"] = 0 
-		self.appgrid["start_btn_row"] = 2 
-		
-		self.appgrid["pd_display_running_col"] = 1 
-		self.appgrid["pd_display_running_row"] = 0 
-		self.appgrid["skip_btn_col"] = 1 
-		self.appgrid["skip_btn_row"] = 1 
-		self.appgrid["edited_btn_col"] = 1 
-		self.appgrid["edited_btn_row"] = 2 
-		self.appgrid["edit_btn_col"] = 1 
-		self.appgrid["edit_btn_row"] = 3 
-		self.appgrid["veto_btn_col"] = 1 
-		self.appgrid["veto_btn_row"] = 4 
-		self.appgrid["comment_label_col"] = 1 
-		self.appgrid["comment_label_row"] = 5 
-		self.appgrid["comment_box_col"] = 1 
-		self.appgrid["comment_box_row"] = 6 
+	
 
 app=App()
