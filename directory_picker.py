@@ -6,7 +6,10 @@ import picker_widget as pw
 class DirectoryPicker:
 	def __init__(self, app, parent):
 		self.sourcelist = []
+		self.shortsources = []
 		self.targetlist = []
+		self.shorttargets = []
+		
 		self.sel_frame = Frame(parent, height=400, width=400)
 		self.sel_frame.pack_propagate(False)
 		self.sel_frame.pack()
