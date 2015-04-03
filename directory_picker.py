@@ -1,7 +1,6 @@
 from Tkinter import *
 
-import source_picker as sp
-import target_picker as tp
+import picker_widget as pw
 
 
 class DirectoryPicker:
@@ -12,8 +11,8 @@ class DirectoryPicker:
 		self.sel_frame.pack_propagate(False)
 		self.sel_frame.pack()
 
-		self.source_widget = sp.SourcePicker(app, self)
-		self.target_widget = tp.TargetPicker(app, self)
+		self.source_widget = pw.Picker(app, self, "source")
+		self.target_widget = pw.Picker(app, self, "target")
 		
 		self.start_btn = Button(self.sel_frame, text="Start sorting", command=app.start_sorting, state=DISABLED)
 		self.start_btn.pack()
