@@ -69,7 +69,6 @@ class DirectoryPicker:
 			self.remove_btn.pack()
 			self.start_btn.pack()
 		
-					
 	def remove_dirs(self):
 		to_delete = list(self.pd_choices_list.curselection())
 		while len(to_delete)>0:
