@@ -5,14 +5,18 @@ import tkFileDialog as tkfd
 class Picker:
 	def __init__(self, app, parent, dir_type):
 		self.directorylist = []
+		self.shortnames = []
+
 		self.parent= parent
 		self.dir_type = dir_type
 		
 		self.dp_frame = Frame(parent.sel_frame, height=175, width=400, bd=5, relief=RAISED)
 		self.dp_frame.pack_propagate(False)
 		self.dp_frame.pack()
-		
-		self.pd_btn = Button(self.dp_frame, text="Pick destination directory", command=self.pick_directory)
+		if self.dir_type=="target":
+			self.pd_btn = Button(self.dp_frame, text="Pick target directory", command=self.pick_directory)
+		else:
+			self.pd_btn = Button(self.dp_frame, text="Pick source directory", command=self.pick_directory)
 		self.pd_btn.pack()
 		
 		self.pd_choices = {}
@@ -21,7 +25,10 @@ class Picker:
 		self.pd_display.pack_propagate(False)
 		self.pd_display.pack()
 		
-		self.pd_choices_label = Label(self.pd_display, text="Selected destinations:")
+		if self.dir_type=="target":
+			self.pd_choices_label = Label(self.pd_display, text="Selected targets:")
+		else:
+			self.pd_choices_label = Label(self.pd_display, text="Selected sources:")
 		self.pd_choices_label.pack()
 
 		self.pd_choices_bar =Scrollbar(self.pd_display)
@@ -34,51 +41,62 @@ class Picker:
 
 	def pick_directory(self):
 		picked = tkfd.askdirectory()
-		self.directorylist.append(picked)
-		if self.dir_type=="target":
-			self.parent.targetlist.append(picked)
-		else:
-			self.parent.sourcelist.append(picked)
-		
-		dir_length = len(picked)
-		if dir_length>50:
-			picked_split = picked.split('/')
-			picked_split = picked_split[1:]
-			picked_split[0] = '/'+picked_split[0]
-			if len(".../"+picked_split[-1])>50:
-				fpicked=".../"+picked_split[-1]
-				fpicked = fpicked[0:50]
-			elif (len(picked_split[0]+"/"+picked_split[-1]))>50:
-				fpicked=".../"+picked_split[-1]
+		if not picked in self.directorylist:
+			self.directorylist.append(picked)
+			if self.dir_type=="target":
+				self.parent.targetlist.append(picked)
 			else:
-				prefix = picked_split[0]
-				suffix = "/.../"+picked_split[-1]
-				for dir in picked_split[1:]:
-					if len(prefix+"/"+dir+suffix)<50:
-						prefix=prefix+"/"+dir
-					else:
-						fpicked=prefix+suffix
-		else:
-			fpicked = picked
-		self.pd_choices_list.insert(END, fpicked)
-		self.remove_btn.config(state=NORMAL)
-		self.parent.start_btn.config(state=NORMAL)
-		if len(self.directorylist)>4:
-			self.pd_choices_list.pack_forget()
-			self.remove_btn.pack_forget()
-			self.pd_choices_bar.pack(side=RIGHT, fill=Y)
-			self.pd_choices_list.pack()
-			self.remove_btn.pack()
+				self.parent.sourcelist.append(picked)
+			
+			dir_length = len(picked)
+			if dir_length>40:
+				picked_split = picked.split('/')
+				picked_split = picked_split[1:]
+				picked_split[0] = '/'+picked_split[0]
+				if len(".../"+picked_split[-1])>40:
+					fpicked=".../"+picked_split[-1]
+					fpicked = fpicked[0:40]
+				elif (len(picked_split[0]+"/"+picked_split[-1]))>40:
+					fpicked=".../"+picked_split[-1]
+				else:
+					prefix = picked_split[0]
+					suffix = "/.../"+picked_split[-1]
+					for dir in picked_split[1:]:
+						if len(prefix+"/"+dir+suffix)<40:
+							prefix=prefix+"/"+dir
+						else:
+							fpicked=prefix+suffix
+			else:
+				fpicked = picked
+			self.pd_choices_list.insert(END, fpicked)
+			self.shortnames.append(fpicked)
+			if self.dir_type=="target":
+				self.parent.shorttargets.append(fpicked)
+			else:
+				self.parent.shortsources.append(fpicked)
+
+			self.remove_btn.config(state=NORMAL)
+			if len(self.parent.targetlist)>0 and len(self.parent.sourcelist)>0:
+				self.parent.start_btn.config(state=NORMAL)
+			if len(self.directorylist)>4:
+				self.pd_choices_list.pack_forget()
+				self.remove_btn.pack_forget()
+				self.pd_choices_bar.pack(side=RIGHT, fill=Y)
+				self.pd_choices_list.pack()
+				self.remove_btn.pack()
 		
 	def remove_dirs(self):
 		to_delete = list(self.pd_choices_list.curselection())
 		while len(to_delete)>0:
 			index=to_delete.pop()
 			self.directorylist.pop(int(index))
+			self.shortnames.pop(int(index))
 			if self.dir_type=="target":
 				self.parent.targetlist.pop(int(index))
+				self.parent.shorttargets.pop(int(index))
 			else:
 				self.parent.sourcelist.pop(int(index))
+				self.parent.shortsources.pop(int(index))
 			self.pd_choices_list.delete(index)
 			to_delete = list(self.pd_choices_list.curselection())
 		if len(self.directorylist)<=4:
@@ -90,8 +108,11 @@ class Picker:
 			self.remove_btn.pack()
 		if len(self.directorylist)==0:
 			self.remove_btn.config(state=DISABLED)
-			self.parent.start_btn.config(state=DISABLED)
+			if len(self.parent.targetlist)==0 or len(self.parent.sourcelist)==0:
+				self.parent.start_btn.config(state=DISABLED)
+			
 
 	def update_grid(self):
+		self.pd_choices_list.config(state=DISABLED)
 		self.pd_btn.pack_forget()
 		self.remove_btn.pack_forget()

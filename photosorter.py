@@ -26,7 +26,9 @@ class App():
 		
 		self.directory_widget = dp.DirectoryPicker(self, self.control_frame)
 		self.sourcelist = self.directory_widget.sourcelist
+		self.shortsources = self.directory_widget.shortsources
 		self.targetlist = self.directory_widget.targetlist
+		self.shorttargets = self.directory_widget.shorttargets
 		
 		self.sorting_widget = sc.SortingControls(self, self.control_frame)
 		
@@ -109,6 +111,4 @@ class App():
 			print "No pictures found!"
 			exit()
 			
-	
-
 app=App()
