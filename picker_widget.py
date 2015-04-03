@@ -2,16 +2,17 @@ from Tkinter import *
 import tkFileDialog as tkfd
 
 
-class SourcePicker:
-	def __init__(self, app, parent):
-		self.sourcelist = []
+class Picker:
+	def __init__(self, app, parent, dir_type):
+		self.directorylist = []
 		self.parent= parent
+		self.dir_type = dir_type
 		
 		self.dp_frame = Frame(parent.sel_frame, height=175, width=400, bd=5, relief=RAISED)
 		self.dp_frame.pack_propagate(False)
 		self.dp_frame.pack()
 		
-		self.pd_btn = Button(self.dp_frame, text="Pick source directory", command=self.pick_directory)
+		self.pd_btn = Button(self.dp_frame, text="Pick destination directory", command=self.pick_directory)
 		self.pd_btn.pack()
 		
 		self.pd_choices = {}
@@ -20,7 +21,7 @@ class SourcePicker:
 		self.pd_display.pack_propagate(False)
 		self.pd_display.pack()
 		
-		self.pd_choices_label = Label(self.pd_display, text="Selected source directories:")
+		self.pd_choices_label = Label(self.pd_display, text="Selected destinations:")
 		self.pd_choices_label.pack()
 
 		self.pd_choices_bar =Scrollbar(self.pd_display)
@@ -33,8 +34,11 @@ class SourcePicker:
 
 	def pick_directory(self):
 		picked = tkfd.askdirectory()
-		self.sourcelist.append(picked)
-		self.parent.sourcelist.append(picked)
+		self.directorylist.append(picked)
+		if self.dir_type=="target":
+			self.parent.targetlist.append(picked)
+		else:
+			self.parent.sourcelist.append(picked)
 		
 		dir_length = len(picked)
 		if dir_length>50:
@@ -59,33 +63,32 @@ class SourcePicker:
 		self.pd_choices_list.insert(END, fpicked)
 		self.remove_btn.config(state=NORMAL)
 		self.parent.start_btn.config(state=NORMAL)
-		if len(self.sourcelist)>4:
+		if len(self.directorylist)>4:
 			self.pd_choices_list.pack_forget()
 			self.remove_btn.pack_forget()
-			#self.start_btn.pack_forget()
 			self.pd_choices_bar.pack(side=RIGHT, fill=Y)
 			self.pd_choices_list.pack()
 			self.remove_btn.pack()
-			#self.start_btn.pack()
 		
 	def remove_dirs(self):
 		to_delete = list(self.pd_choices_list.curselection())
 		while len(to_delete)>0:
 			index=to_delete.pop()
-			self.sourcelist.pop(int(index))
-			self.parent.sourcelist.pop(int(index))
+			self.directorylist.pop(int(index))
+			if self.dir_type=="target":
+				self.parent.targetlist.pop(int(index))
+			else:
+				self.parent.sourcelist.pop(int(index))
 			self.pd_choices_list.delete(index)
 			to_delete = list(self.pd_choices_list.curselection())
-		if len(self.sourcelist)<=4:
+		if len(self.directorylist)<=4:
 			self.pd_choices_list.pack_forget()
 			self.remove_btn.pack_forget()
-			#self.start_btn.pack_forget()
 			self.pd_choices_bar.pack_forget()
 			self.pd_choices_list.config(width=400)
 			self.pd_choices_list.pack()
 			self.remove_btn.pack()
-			#self.start_btn.pack()
-		if len(self.sourcelist)==0:
+		if len(self.directorylist)==0:
 			self.remove_btn.config(state=DISABLED)
 			self.parent.start_btn.config(state=DISABLED)
 
