@@ -1,4 +1,3 @@
-import tkFileDialog as tkfd
 from Tkinter import *
 from PIL import Image, ImageTk
 
@@ -6,7 +5,6 @@ import directory_picker as dp
 import sorting_controls as sc
 
 import os
-import time
 from random import shuffle
 from sys import exit
 

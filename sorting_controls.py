@@ -1,10 +1,4 @@
 from Tkinter import *
-from PIL import Image, ImageTk
-
-import os
-import time
-from random import shuffle
-from sys import exit
 
 class SortingControls:
 	def __init__(self, app, parent):
@@ -41,9 +35,3 @@ class SortingControls:
 		
 	def pack(self):
 		self.sc_frame.pack()
-	
-	
-	
-		 
-	
-	

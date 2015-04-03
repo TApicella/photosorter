@@ -1,12 +1,6 @@
 from Tkinter import *
 import tkFileDialog as tkfd
-from PIL import Image, ImageTk
-from ScrolledText import ScrolledText
-from random import shuffle
 
-import os
-import time
-from sys import exit
 
 class DirectoryPicker:
 	def __init__(self, app, parent):
@@ -34,7 +28,6 @@ class DirectoryPicker:
 	def pick_directory(self):
 		picked = tkfd.askdirectory()
 		self.directorylist.append(picked)
-		spacer="\n"
 		self.start_btn.config(state=NORMAL)
 		self.pd_choices[picked]=Label(self.pd_display, text=picked, anchor=W, justify=LEFT, wrap=390)
 		self.pd_choices[picked].pack(anchor=NW)
