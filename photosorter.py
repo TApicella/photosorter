@@ -25,7 +25,8 @@ class App():
 		self.control_frame.grid(column=1, row=0)
 		
 		self.directory_widget = dp.DirectoryPicker(self, self.control_frame)
-		self.directorylist = self.directory_widget.directorylist
+		self.sourcelist = self.directory_widget.sourcelist
+		self.targetlist = self.directory_widget.targetlist
 		
 		self.sorting_widget = sc.SortingControls(self, self.control_frame)
 		
@@ -87,8 +88,8 @@ class App():
 					
 		self.photolist = set()
 		self.index = 0
-		print self.directorylist
-		for ps in self.directorylist:
+		print self.sourcelist
+		for ps in self.sourcelist:
 			for dirName, subdirList, fileList in os.walk(self.home+ps):
 				for fname in fileList:
 					fullname = dirName+"/"+fname
