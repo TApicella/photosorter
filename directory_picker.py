@@ -21,6 +21,7 @@ class DirectoryPicker:
 		self.start_btn.pack()
 
 	def update_grid(self):
+		self.sel_frame.pack_propagate(True)
 		self.start_btn.pack_forget()
 		self.source_widget.update_grid()
 		self.target_widget.update_grid()

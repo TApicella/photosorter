@@ -49,20 +49,20 @@ class Picker:
 				self.parent.sourcelist.append(picked)
 			
 			dir_length = len(picked)
-			if dir_length>40:
+			if dir_length>50:
 				picked_split = picked.split('/')
 				picked_split = picked_split[1:]
 				picked_split[0] = '/'+picked_split[0]
-				if len(".../"+picked_split[-1])>40:
+				if len(".../"+picked_split[-1])>50:
 					fpicked=".../"+picked_split[-1]
-					fpicked = fpicked[0:40]
-				elif (len(picked_split[0]+"/"+picked_split[-1]))>40:
+					fpicked = fpicked[0:50]
+				elif (len(picked_split[0]+"/"+picked_split[-1]))>50:
 					fpicked=".../"+picked_split[-1]
 				else:
 					prefix = picked_split[0]
 					suffix = "/.../"+picked_split[-1]
 					for dir in picked_split[1:]:
-						if len(prefix+"/"+dir+suffix)<40:
+						if len(prefix+"/"+dir+suffix)<50:
 							prefix=prefix+"/"+dir
 						else:
 							fpicked=prefix+suffix
@@ -113,6 +113,10 @@ class Picker:
 			
 
 	def update_grid(self):
-		self.pd_choices_list.config(state=DISABLED)
-		self.pd_btn.pack_forget()
-		self.remove_btn.pack_forget()
+		if self.dir_type=="target":
+			self.dp_frame.pack_forget()
+		else:
+			self.pd_display.config(height=175)
+			self.pd_choices_list.config(state=DISABLED)
+			self.pd_btn.pack_forget()
+			self.remove_btn.pack_forget()
