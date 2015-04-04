@@ -14,9 +14,8 @@ class App():
 		
 		#Assuming home directory is current directory
 		self.home = ""
-		self.to_edit = self.home+"to_edit.txt"
-		self.veto = self.home+"veto.txt"
-		self.edited = self.home+"edited.txt"
+		self.processed = self.home+"processed.txt"
+		self.config = self.home+"config.txt"
 		self.skip = {}
 		
 		self.root.geometry('+10+10')
@@ -62,35 +61,23 @@ class App():
 	
 	def next(self, event=None):
 		self.index = self.index+1
-		print self.index
-		print self.count
-		print
+		#print self.index
+		#print self.count
+		#print
 		if self.index >= self.count:
 			self.init_list()
 		self.update_picture()
 	
 	def init_list(self):
-		if os.path.isfile(self.veto):
-			with open(self.veto) as v:
-				for line in v:
-					if line[0]!="#" and len(line.strip())!=0:
-						self.skip[line.strip()]="y"
-						
-		if os.path.isfile(self.to_edit):			
-			with open(self.to_edit) as t:
-				for line in t:
-					if line[0]!="#" and len(line.strip())!=0:
-						self.skip[line.strip()]="y"
-					
-		if os.path.isfile(self.edited):
-			with open(self.edited) as e:
+		if os.path.isfile(self.processed):
+			with open(self.processed) as e:
 				for line in e:
 					if line[0]!="#" and len(line.strip())!=0:
 						self.skip[line.strip()]="y"
 					
 		self.photolist = set()
 		self.index = 0
-		print self.sourcelist
+		#print self.sourcelist
 		for ps in self.sourcelist:
 			for dirName, subdirList, fileList in os.walk(self.home+ps):
 				for fname in fileList:
@@ -106,7 +93,7 @@ class App():
 		shuffle(self.photolist)
 		
 		self.count = len(self.photolist)
-		print self.count
+		#print self.count
 		if self.count==0:
 			print "No pictures found!"
 			exit()

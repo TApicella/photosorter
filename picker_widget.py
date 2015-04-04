@@ -1,12 +1,19 @@
 from Tkinter import *
 import tkFileDialog as tkfd
-
+import os
 
 class Picker:
 	def __init__(self, app, parent, dir_type):
 		self.directorylist = []
 		self.shortnames = []
-
+		
+		self.initdir = None
+		if os.path.isfile(app.config):
+			with open(app.config) as e:
+				for line in e:
+					splitline = line.split("=")
+					if splitline[0]=="initdir" and len(splitline[1].strip())!=0:
+						self.initdir=splitline[1]
 		self.parent= parent
 		self.dir_type = dir_type
 		
@@ -40,7 +47,7 @@ class Picker:
 		self.remove_btn.pack()
 
 	def pick_directory(self):
-		picked = tkfd.askdirectory()
+		picked = tkfd.askdirectory(initialdir=self.initdir)
 		if not picked in self.directorylist:
 			self.directorylist.append(picked)
 			if self.dir_type=="target":
@@ -59,11 +66,11 @@ class Picker:
 				elif (len(picked_split[0]+"/"+picked_split[-1]))>50:
 					fpicked=".../"+picked_split[-1]
 				else:
-					prefix = picked_split[0]
-					suffix = "/.../"+picked_split[-1]
-					for dir in picked_split[1:]:
-						if len(prefix+"/"+dir+suffix)<50:
-							prefix=prefix+"/"+dir
+					prefix = picked_split[0]+"/.../"
+					suffix = picked_split[-1]
+					for dir in reversed(picked_split[1:-1]):
+						if len(prefix+dir+'/'+suffix)<50:
+							suffix=dir+'/'+suffix
 						else:
 							fpicked=prefix+suffix
 			else:

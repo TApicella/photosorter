@@ -47,6 +47,9 @@ class SortingControls:
 			scopy(app.current_photo, new_file_path)
 		else:
 			smove(app.current_photo, new_file_path)
+			
+		with open(app.processed, "a") as f:
+			f.write(app.current_photo+"\n\n")
 		comment_name = new_file_path.split('/')[-1]
 		comment_path = full_target_path+"/"+"comments.txt"
 		self.write_comment(app, comment_path, comment_name)
