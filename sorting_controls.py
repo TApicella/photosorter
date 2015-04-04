@@ -8,29 +8,35 @@ class SortingControls:
 
 		self.shorttargets = app.shorttargets
 		self.targetlist = app.targetlist
-		self.sc_frame = Frame(parent, height=350, width=400, bd=5, relief=RAISED)
+		self.sc_frame = Frame(parent, height=600, width=400, bd=5, relief=RAISED)
 		self.sc_frame.pack_propagate(False) 
 		#Don't pack until editing has started
 		
 		self.move_or_copy = IntVar()
 		self.move_or_copy.set(1)
-		self.move_btn = Radiobutton(self.sc_frame, text="Move photos", variable = self.move_or_copy, value=1)
-		self.copy_btn = Radiobutton(self.sc_frame, text="Copy photos", variable = self.move_or_copy, value=2)
+		self.copy_btn = Radiobutton(self.sc_frame, text="Copy photos", variable = self.move_or_copy, value=1)
+		self.move_btn = Radiobutton(self.sc_frame, text="Move photos", variable = self.move_or_copy, value=2)
 		self.move_btn.pack()
 		self.copy_btn.pack()
-
-		self.action_btn = Button(self.sc_frame, text="Process photo", command=lambda: self.process_photo(app))
-		self.action_btn.pack()
 
 		self.comment_label = Label(self.sc_frame, text="Add a comment")
 		self.comment_box = Entry(self.sc_frame)
 		self.comment_label.pack()
 		self.comment_box.pack()
+		
+		self.sc_choices_bar =Scrollbar(self.sc_frame)
+		
+		self.sc_choices_list = Listbox(self.sc_frame, selectmode=SINGLE, height=600, width=384, yscrollcommand=self.sc_choices_bar.set)
+		self.sc_choices_list.bind("<Double-Button-1>", lambda event: self.process_photo(app))
+		
+		self.sc_choices_bar.config(command=self.sc_choices_list.yview)
 
-	def process_photo(self, app, even=None):
+	def process_photo(self, app, event=None):
+		selection = self.sc_choices_list.curselection()
+		value = self.sc_choices_list.get(selection[0])
 		fsplit = app.current_photo.split('/')
 		fname = fsplit[-1]
-		full_target_path = app.targetlist[self.shorttargets.index(self.target_dir.get())]
+		full_target_path = app.targetlist[self.shorttargets.index(value)]
 		full_file_path = full_target_path+'/'+fname
 		new_file_path = full_file_path
 		copynum = 1
@@ -38,19 +44,20 @@ class SortingControls:
 			new_file_path = self.last_replace(full_file_path, copynum)
 			copynum = copynum+1
 		if self.move_or_copy.get()==1:
-			smove(app.current_photo, new_file_path)
-		else:
 			scopy(app.current_photo, new_file_path)
-
+		else:
+			smove(app.current_photo, new_file_path)
+		comment_name = new_file_path.split('/')[-1]
 		comment_path = full_target_path+"/"+"comments.txt"
-		self.write_comment(app, comment_path, fname)
+		self.write_comment(app, comment_path, comment_name)
+		self.sc_choices_list.selection_clear(0, END)
 		app.next()
 
 	def write_comment(self, app, cpath, pname, event=None):
 		with open(cpath, "a") as f:
 			if self.comment_box.get()!=None:
-				f.write("Photo: "+pname+"\n")
-				if self.comment_box.get() != "":
+				if self.comment_box.get().strip() != "":
+					f.write("Photo: "+pname+"\n")
 					f.write("#"+self.comment_box.get()+"\n\n")
 			
 		app.next()
@@ -67,9 +74,8 @@ class SortingControls:
 
 	def pack(self):
 		#Needs to be added after shorttargets has been populated
-		self.target_dir = StringVar()
-		self.target_dir.set(self.shorttargets[0])
-		self.target_options = apply(OptionMenu, (self.sc_frame, self.target_dir) + tuple(self.shorttargets))
-		self.target_options.pack()
-		
+		for targ in self.shorttargets:
+			self.sc_choices_list.insert(END, targ)
+		self.sc_choices_list.pack()
+		self.sc_choices_bar.pack()
 		self.sc_frame.pack()
